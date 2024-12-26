@@ -8,22 +8,22 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t secondcicdpipeline .'
+                bat 'docker build -t secondcicdpipeline .'
             }
         }
         stage('Run Docker Container') {
             steps {
                 script {
                     // Stop and remove any existing container
-                    sh '''
-                    docker stop secondcicdpipeline || true
-                    docker rm secondcicdpipeline || true
+                    bat '''
+                    docker stop secondcicdpipeline || exit 0
+                    docker rm secondcicdpipeline || exit 0
                     '''
 
                     // Start a new container
-                    sh '''
+                    bat '''
                     docker run -d --name secondcicdpipeline \
-                    -v $(pwd):/app \
+                    -v %cd%:/app \
                     -w /app python:3.9-slim python main.py
                     '''
                 }
